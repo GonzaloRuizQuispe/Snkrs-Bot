@@ -100,20 +100,19 @@ while True:
 
                     #Se Insertan Los Datos En La DB
                     if fila[5] == 'Delete':
-                        cursor.execute("UPDATE productos_grid SET Nombre='"+str(Nombre.text)+"',Precio="+str(Precio.text[1:-3])+",URL_IMG='"+str(URL_IMG)+"',Cambios='StockOn',Talles='"+Talles[:-3]+"' WHERE ID_Producto="+str(fila[0]))
+                        cursor.execute("UPDATE productos_grid SET Nombre='"+str(Nombre.text)+"',Precio="+str(Precio.text[1:-3])+",URL_IMG='"+str(URL_IMG)+"',Cambios='StockOn',Talles='"+Talles[:-3]+"',Hora=CURRENT_TIMESTAMP() WHERE ID_Producto="+str(fila[0]))
                     
                     elif fila[6] != Talles[:-3]:
-                        cursor.execute("UPDATE productos_grid SET Nombre='"+str(Nombre.text)+"',Precio="+str(Precio.text[1:-3])+",URL_IMG='"+str(URL_IMG)+"',Cambios='Talles',Talles='"+Talles[:-3]+"' WHERE ID_Producto="+str(fila[0]))
+                        cursor.execute("UPDATE productos_grid SET Nombre='"+str(Nombre.text)+"',Precio="+str(Precio.text[1:-3])+",URL_IMG='"+str(URL_IMG)+"',Cambios='Talles',Talles='"+Talles[:-3]+"',Hora=CURRENT_TIMESTAMP() WHERE ID_Producto="+str(fila[0]))
 
                     elif fila[5] == 'Talles':
-                        print(fila[6])
                         print("Esperando Cambio De Programa Notificaciónes")
 
                     elif fila[5] == 'StockOn':
                         print("Esperando Cambio De Programa Notificaciónes")
 
                     else:
-                        cursor.execute("UPDATE productos_grid SET Nombre='"+str(Nombre.text)+"',Precio="+str(Precio.text[1:-3])+",URL_IMG='"+str(URL_IMG)+"',Cambios='Nuevo',Talles='"+Talles[:-3]+"' WHERE ID_Producto="+str(fila[0]))
+                        cursor.execute("UPDATE productos_grid SET Nombre='"+str(Nombre.text)+"',Precio="+str(Precio.text[1:-3])+",URL_IMG='"+str(URL_IMG)+"',Cambios='Nuevo',Talles='"+Talles[:-3]+"',Hora=CURRENT_TIMESTAMP() WHERE ID_Producto="+str(fila[0]))
 
                     #Se Guardan Los Cambios En La DB
                     connection.commit()
@@ -138,4 +137,5 @@ while True:
 
     except KeyboardInterrupt:
         print("El Programa Ha Finalizado")
+        input("Esperando Entrada De Administrador\n")
         break
