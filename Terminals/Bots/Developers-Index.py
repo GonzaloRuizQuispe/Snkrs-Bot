@@ -13,7 +13,7 @@ client = commands.Bot(command_prefix=BOT_PREFIX, intents = intents)
 
 @client.event
 async def on_ready():
-    await client.change_presence(status=discord.Status.online, activity=discord.Game("Discord Manager"))
+    await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.watching, name="Database"))
     print("Logged in as: " + client.user.name + "\n")
 
 @client.event

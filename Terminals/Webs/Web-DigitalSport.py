@@ -3,8 +3,6 @@ from bs4 import BeautifulSoup as b
 import mysql.connector
 from mysql.connector import Error
 
-from Talles import Talles_Grid
-
 #Registro En Pagina
 headers = {
 "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36",
@@ -43,8 +41,8 @@ while True:
 
             #De Aca En Adelante Se Puede Empezar A Leer/Escribir La DB
             
-            #1° Se Ejecuta La Busqueda De La Tabla De Productos Grid
-            cursor.execute("SELECT * FROM productos_grid")
+            #1° Se Ejecuta La Busqueda De La Tabla De Productos digitalsport
+            cursor.execute("SELECT * FROM productos_digitalsport")
 
             #Se Seleccionan Todos Los Datos
             cantidad_f = cursor.fetchall()
@@ -54,7 +52,6 @@ while True:
 
                 #Se Establece La URL Del Producto Ubicada En El La Columna 3
                 url = fila[4]
-
             
                 #Se Entra A La Pagina
                 html = requests.get(url,headers=headers)
@@ -63,27 +60,25 @@ while True:
 
                 #Se Crea Una Excepcion Si No Se Ecuentra "Post" Que Es El Espacio Donde Se Ubica El Articulo
                 try:
-                    
-                    #Extraccion De Datos Grid
-                    post = soup.find('div',{'class':'row product-details'})
-                    Nombre = post.find('div',{'class':'product-name'})
-                    Precio = post.find('strong',{'class':'skuBestPrice'})
-                    URL_IMG = post.find('img',{'id':'image-main'}).get('src')
 
-                    #Extracción Talles En Script Grid
-                    r = soup.find(lambda script: script.name == 'script' and 'var skuJson_0' in str(script))
+                    #Extraccion De Datos
+                    post = soup.find('div',{'class':'product_center'})
+                    Nombre = post.find('h1')
+                    Precio = post.find('span',{'class':'price'})
+                    URL_IMG = "https://www.digitalsport.com.ar"+post.find('img',{'class':'media'}).get('src')
+
                     Talles = ""
 
-                    for data in Talles_Grid.talles_grid(str(r)):
-                        for a in data['dimensionsMap']['Talle']:
-                            Talles += a+" ┋ "
+                    Box_Size = post.find('ul',{'id':'sizes'})
+                    for Size in Box_Size.findAll('div',{'class':'arg'}):
+                        Talles += Size.text[3:]+" ┋ "
 
                     #Se Insertan Los Datos En La DB
                     if fila[5] == 'Delete':
-                        cursor.execute("UPDATE productos_grid SET Nombre='"+str(Nombre.text)+"',Precio="+str(Precio.text[1:-3])+",URL_IMG='"+str(URL_IMG)+"',Cambios='StockOn',Talles='"+Talles[:-3]+"',Hora=CURRENT_TIMESTAMP() WHERE ID_Producto="+str(fila[0]))
+                        cursor.execute("UPDATE productos_digitalsport SET Nombre='"+str(Nombre.text)+"',Precio="+str(Precio.text[1:])+",URL_IMG='"+str(URL_IMG)+"',Cambios='StockOn',Talles='"+Talles[:-3]+"',Hora=CURRENT_TIMESTAMP() WHERE ID_Producto="+str(fila[0]))
                     
                     elif fila[6] != Talles[:-3]:
-                        cursor.execute("UPDATE productos_grid SET Nombre='"+str(Nombre.text)+"',Precio="+str(Precio.text[1:-3])+",URL_IMG='"+str(URL_IMG)+"',Cambios='Talles',Talles='"+Talles[:-3]+"',Hora=CURRENT_TIMESTAMP() WHERE ID_Producto="+str(fila[0]))
+                        cursor.execute("UPDATE productos_digitalsport SET Nombre='"+str(Nombre.text)+"',Precio="+str(Precio.text[1:])+",URL_IMG='"+str(URL_IMG)+"',Cambios='Talles',Talles='"+Talles[:-3]+"',Hora=CURRENT_TIMESTAMP() WHERE ID_Producto="+str(fila[0]))
 
                     elif fila[5] == 'Talles':
                         print("Esperando Cambio De Programa Notificaciónes")
@@ -92,7 +87,7 @@ while True:
                         print("Esperando Cambio De Programa Notificaciónes")
 
                     else:
-                        cursor.execute("UPDATE productos_grid SET Nombre='"+str(Nombre.text)+"',Precio="+str(Precio.text[1:-3])+",URL_IMG='"+str(URL_IMG)+"',Cambios='Nuevo',Talles='"+Talles[:-3]+"',Hora=CURRENT_TIMESTAMP() WHERE ID_Producto="+str(fila[0]))
+                        cursor.execute("UPDATE productos_digitalsport SET Nombre='"+str(Nombre.text)+"',Precio="+str(Precio.text[1:])+",URL_IMG='"+str(URL_IMG)+"',Cambios='Nuevo',Talles='"+Talles[:-3]+"',Hora=CURRENT_TIMESTAMP() WHERE ID_Producto="+str(fila[0]))
 
                     #Se Guardan Los Cambios En La DB
                     connection.commit()
@@ -106,7 +101,7 @@ while True:
 
                     #Si No Se Encuentra Eliminado Es Agregado Es Actualizado En Cambios Como 'Delete'
                     else:
-                        cursor.execute("UPDATE productos_grid SET Cambios='Delete' WHERE ID_Producto="+str(fila[0]))
+                        cursor.execute("UPDATE productos_digitalsport SET Cambios='Delete' WHERE ID_Producto="+str(fila[0]))
 
                     #Se Guardan Los Cambios En La DB
                     connection.commit()
