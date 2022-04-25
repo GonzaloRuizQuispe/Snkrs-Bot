@@ -21,3 +21,6 @@ SELECT * FROM productos_digitalsport;
 
 INSERT INTO productos_digitalsport (URL_WEB) VALUES
 ('https://www.digitalsport.com.ar/dionysos/prod/zapatillas-superstar-adidas-539125/');
+
+INSERT INTO secciones_digitalsport (URL_Seccion) VALUES
+('https://www.digitalsport.com.ar/dionysos/prods/?category[1]=1&category[1]=25');
