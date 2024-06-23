@@ -6,5 +6,5 @@
 
 ## Características
 
-- **Monitoreo de Productos**: Verifica la disponibilidad de productos basándose en nombre, imagen y tallas.
-- **Notificaciones en Discord**: Envía alertas en tiempo real a través de un bot en Discord.
+- **Monitoreo de Productos**: Verifica la disponibilidad de productos basándose en el link del mismo y su Sku.
+- **Notificaciones en Discord**: Envía alertas en tiempo real a través de un bot en Discord la misma contiene nombre, imagen y talles.
